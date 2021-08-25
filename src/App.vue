@@ -1,43 +1,60 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    {{counter}} <button @click="addToCounter">add</button>
-    <span v-if="counter > 10">BogChamp > PogChamp</span>
-    <ul>
-      <li v-for="(item, i) in array" :key="i">{{item}}</li>
-    </ul>
-    {{message}}
-    <input v-model="message">
-    <HelloWorld msg="Welcome to Your Vue.js App" :poop="69" @anything="whenWeHearTheEvent"/>
-  </div>
+  <v-app>
+    <v-app-bar
+      app
+      color="primary"
+      dark
+    >
+      <div class="d-flex align-center">
+        <v-img
+          alt="Vuetify Logo"
+          class="shrink mr-2"
+          contain
+          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+          transition="scale-transition"
+          width="40"
+        />
+
+        <v-img
+          alt="Vuetify Name"
+          class="shrink mt-1 hidden-sm-and-down"
+          contain
+          min-width="100"
+          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
+          width="100"
+        />
+      </div>
+
+      <v-spacer></v-spacer>
+
+      <v-btn
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank"
+        text
+      >
+        <span class="mr-2">Latest Release</span>
+        <v-icon>mdi-open-in-new</v-icon>
+      </v-btn>
+    </v-app-bar>
+
+    <v-main>
+      <ClosestHoliday v-if="days.length > 0" :days="days"/>
+    </v-main>
+  </v-app>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import ClosestHoliday from './components/ClosestHoliday.vue'
 import getDaysToBook from './logic/main'
 
 export default {
   name: 'App',
   components: {
-    HelloWorld
+    ClosestHoliday
   },
-  data () {
-    return {
-      message: 'Hello You ❤!',
-      counter: 0,
-      array: ['poop', 'woop', 'doop'],
-      days: []
-    }
-  },
-  methods: {
-    addToCounter() {
-      this.counter++;
-      this.message = "lov u lowen";
-    },
-    whenWeHearTheEvent(newNumber) {
-      this.counter = newNumber;
-    }
-  },
+  data: () => ({
+    days: []
+  }),
   async mounted () {
     try {
       this.days = await getDaysToBook();
@@ -46,16 +63,5 @@ export default {
       console.error(err);
     }
   }
-}
+};
 </script>
-
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>

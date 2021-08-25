@@ -1,52 +1,81 @@
 import moment from 'moment'
 
 export function getDaysToBookFromJson(data) {
-    let english = data["england-and-wales"].events;
+    let holidays = data["england-and-wales"].events;
     let totalDays = [];
     let tempDays = [];
 
     const today = moment();
 
-    english = english.filter(holiday =>
+    holidays = holidays.filter(holiday =>
         moment(holiday.date).isSameOrAfter(today, 'day'));
 
-    let saturdays = getAllWeekends(english, -1);
-    let sundays = getAllWeekends(english, 0);
+    let temp = [ ...holidays ];
+    let holidaysWithoutWeekends = [];
+
+    for (let day of temp) {
+        holidaysWithoutWeekends.push(day.date);
+    }
+
+    let saturdays = getAllWeekends(holidays, -1);
+    let sundays = getAllWeekends(holidays, 0);
 
     for (const day of saturdays)
-        english.push({ title: "Weekend", date: day });
+        holidays.push({ title: "Weekend", date: day });
 
     for (const day of sundays)
-        english.push({ title: "Weekend", date: day });
+        holidays.push({ title: "Weekend", date: day });
 
-    english.sort(compare)
+    holidays.sort(compare)
 
-    for (let i = 0; i < english.length; i++) {
-        let holiday = english[i];
-        let nextHoliday = english[i + 1];
+    let titles = [];
+
+    for (let i = 0; i < holidays.length; i++) {
+        let holiday = holidays[i];
+        let nextHoliday = holidays[i + 1];
+        
+        if (holiday.title != "Weekend")
+            titles.push(holiday.title);
 
         if (daysTillNextHoliday(holiday, nextHoliday) < 5) {
             tempDays.push(holiday);
             tempDays.push(nextHoliday);
         }
         else {
-            let startDate = tempDays[0].date;
-            let endDate = tempDays[tempDays.length - 1].date;
-            let daysOff = daysToBook(startDate, endDate, english);
+            let start = tempDays[0].date;
+            let end = tempDays[tempDays.length - 1].date;
+            let daysOff = daysToBook(start, end, holidays);
+
+            let allDates = [];
+
+            for (let day of tempDays) {
+                if (!allDates.includes(day.date))
+                    allDates.push(day.date);
+            }
+
+            for (let day of daysOff) {
+                if (!allDates.includes(day))
+                    allDates.push(day);
+            }
+
+            allDates.sort(compare2);
 
             if (tempDays.length > 2 &&
-                startDate != endDate) {
+                start != end) {
                 let days = {
-                    startDate: startDate,
-                    endDate: endDate,
-                    duration: daysBetweenAndIncluding(startDate, endDate),
+                    start: start,
+                    end: end,
+                    duration: daysBetweenAndIncluding(start, end),
                     daysOff: daysOff,
-                    noOfDays: daysOff.length
+                    noOfDays: daysOff.length,
+                    titles: titles,
+                    allDates: allDates
                 };
 
                 totalDays.push(days);
             }
             tempDays = [];
+            titles = [];
         }
     }
 
@@ -115,6 +144,19 @@ export function getAllWeekends(holidays, day) {
 export function compare(a, b) {
     const dateA = a.date.toUpperCase();
     const dateB = b.date.toUpperCase();
+
+    let comparison = 0;
+    if (dateA > dateB) {
+        comparison = 1;
+    } else if (dateA < dateB) {
+        comparison = -1;
+    }
+    return comparison;
+}
+
+export function compare2(a, b) {
+    const dateA = a.toUpperCase();
+    const dateB = b.toUpperCase();
 
     let comparison = 0;
     if (dateA > dateB) {
