@@ -47,17 +47,19 @@ export function getDaysToBookFromJson(data) {
             let daysOff = daysToBook(start, end, holidays);
 
             let allDates = [];
+            let allDatesTemp = [];
 
             for (let day of tempDays) {
-                if (!allDates.includes(day.date))
-                    allDates.push(day.date);
+                if (!allDatesTemp.includes(day.date))
+                    allDates.push({date: day.date, title: day.title});
+                    allDatesTemp.push(day.date);
             }
 
             for (let day of daysOff) {
-                if (!allDates.includes(day))
-                    allDates.push(day);
+                if (!allDatesTemp.includes(day))
+                    allDates.push({date: day, title: "Book"});
+                    allDatesTemp.push(day);
             }
-
             allDates.sort(compare2);
 
             if (tempDays.length > 2 &&
@@ -155,8 +157,8 @@ export function compare(a, b) {
 }
 
 export function compare2(a, b) {
-    const dateA = a.toUpperCase();
-    const dateB = b.toUpperCase();
+    const dateA = a.date.toUpperCase();
+    const dateB = b.date.toUpperCase();
 
     let comparison = 0;
     if (dateA > dateB) {

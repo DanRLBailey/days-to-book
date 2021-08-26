@@ -34,19 +34,34 @@ export default {
     events: [],
   }),
   mounted() {
+    
     for (let day of this.days) {
-        this.events.push({
-            name: day.titles.join(", "),
-            start: day.start, 
-            end: day.end
-            });
+      let newEvent = {};
+      day.allDates.forEach((event, index) => {
+        if (newEvent.name != event.title) { //new event
+          if (newEvent.name != null) {
+            this.events.push(newEvent);
+            newEvent = {};
+          }
 
-        this.events.push({
-            name: "Book",
-            start: day.daysOff[0], 
-            end: day.daysOff[day.daysOff.length - 1],
-            color: "red"
-            });
+          newEvent.name = event.title;
+          newEvent.start = event.date;
+        }
+        else if (newEvent.name == event.title &&
+                index != day.allDates.length - 1) { //same event
+          newEvent.end = event.date;
+        }
+        else if (index == day.allDates.length - 1){
+          newEvent.end = event.date;
+          this.events.push(newEvent);
+        }
+      });
+          this.events.push({
+              name: "Total",
+              start: day.allDates[0].date, 
+              end: day.allDates[day.allDates.length - 1].date,
+              color: "red"
+              });
     }
   },
 };
