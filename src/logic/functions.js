@@ -1,7 +1,7 @@
 import moment from 'moment'
 
-export function getDaysToBookFromJson(data) {
-    let holidays = data["england-and-wales"].events;
+export function getDaysToBookFromJson(data, region) {
+    let holidays = data[region].events;
     let totalDays = [];
     let tempDays = [];
 

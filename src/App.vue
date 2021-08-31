@@ -38,7 +38,12 @@
     </v-app-bar>
 
     <v-main>
-      <ClosestHoliday v-if="days.length > 0" :days="days"/>
+      <ClosestHoliday 
+        v-if="days.length > 0" 
+        :days="days" 
+        :regions="regions" 
+        :region="chosenRegion"
+        @get:events="getNewRegion" />
     </v-main>
   </v-app>
 </template>
@@ -53,14 +58,26 @@ export default {
     ClosestHoliday
   },
   data: () => ({
-    days: []
+    days: [],
+    regions: {
+      "england-and-wales": "England & Wales",
+      "scotland": "Scotland", 
+      "northern-ireland": "Northern Ireland"
+    },
+    chosenRegion: "england-and-wales"
   }),
   async mounted () {
-    try {
-      this.days = await getDaysToBook();
-      console.log(this.days);
-    } catch(err) {
-      console.error(err);
+    this.getNewRegion(this.chosenRegion);
+  },
+  methods: {
+    async getNewRegion(region) {
+      console.log('getting new region...', region)
+      try {
+        this.days = await getDaysToBook(region);
+        console.log(this.days);
+      } catch(err) {
+        console.error(err);
+      }
     }
   }
 };
