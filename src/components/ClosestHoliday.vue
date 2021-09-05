@@ -1,6 +1,5 @@
 <template>
   <div class="closest-holiday-container">
-    <h1>Closest Holiday</h1>
     <div class="holiday-container">
       <div class="holiday-selector">
         <v-sheet>
@@ -8,7 +7,7 @@
             {{ this.calendarTitle }}
           </v-toolbar-title>
         </v-sheet>
-        <v-sheet tile class="d-flex">
+        <v-sheet tile class="d-flex navigation">
           <v-btn icon class="ma-2" @click="$refs.calendar.prev()">
             <v-icon>mdi-chevron-left</v-icon>
           </v-btn>
@@ -22,6 +21,27 @@
         label="Region"
         @change="getNewEvent">
         </v-select>
+        <v-card>
+          <p class="heading">
+            National Holidays for UK
+          </p>
+          <p>
+            Using national holidays, this calendar shoes how you can get the most consecutive days off in a row, while booking off the least amount of days.
+          </p>
+          <div>
+            <ul>
+              <li id="weekend">
+                Weekend
+              </li>
+              <li id="national">
+                National Holiday
+              </li>
+              <li id="holiday">
+                Days to Book
+              </li>
+            </ul>
+          </div>
+        </v-card>
       </div>
       <div class="closest-holiday">
         <v-sheet>
@@ -30,7 +50,6 @@
             :events="events"
             ref="calendar"
             min-weeks="7"
-            :show-month-on-first="false"
             @change="setCalendarTitle"
           />
         </v-sheet>
@@ -138,15 +157,19 @@ export default {
 </script>
 
 <style lang="scss">
-$background-colour: #e6e4e0;
+$background-colour: #f0f0f0;
 $background-colour-accent: linear-gradient(145deg, rgba(239,149,157,1) 0%, rgba(234,113,123,1) 100%);
-$background-colour-calendar: #ffffff;
+$background-colour-alt: #ffffff;
+$weekend-colour: #5AC41C;
+$national-colour: #7EBDC3;
+$holiday-colour: #F7C164;
 
 .v-application--wrap {
   background: $background-colour;
 }
 
 .closest-holiday-container {
+  margin-top: 5rem;
   text-align: center;
   padding: 0 2rem;
 
@@ -158,6 +181,7 @@ $background-colour-calendar: #ffffff;
     display: flex;
     max-width: 1000px;
     margin: 0 auto;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 
     .v-calendar-weekly__head {
       min-height: 43px;
@@ -171,6 +195,10 @@ $background-colour-calendar: #ffffff;
       padding: 1rem;
       background: $background-colour-accent;
       flex: .7;
+
+      .title {
+        font-size: 1.5rem !important;
+      }
 
       .title,
       button,
@@ -187,12 +215,58 @@ $background-colour-calendar: #ffffff;
       .d-flex {
         margin-bottom: 1rem;
       }
+
+      .navigation {
+        display: block !important;
+      }
+
+      .v-card {
+        background: $background-colour-alt !important;
+        padding: 1rem;
+        text-align: left;
+
+        .heading {
+          font-weight: 500;
+        }
+
+        ul {
+          padding: 0;
+          text-align: center;
+          color: white;
+
+          li {
+            margin: .5rem 0;
+            display: block;
+            padding: .2rem;
+            background: black;
+            border-radius: 5px;
+          }
+
+          #weekend {
+            background: $weekend-colour;
+          }
+
+          #national {
+            background: $national-colour;
+          }
+
+          #holiday {
+            background: $holiday-colour;
+          }
+        }
+      }
     }
 
     .closest-holiday {
       padding: 1rem;
-      background: $background-colour-calendar;
+      background: $background-colour-alt;
       flex: 1;
+
+      .v-outside {
+        .theme--light.v-btn.v-btn--has-bg {
+          color: #a1a1a1;
+        }
+      }
     }
   }
 }
@@ -211,7 +285,7 @@ $background-colour-calendar: #ffffff;
 .theme--light.v-calendar-weekly,
 .theme--light.v-calendar-weekly .v-calendar-weekly__day.v-outside {
   border: none  !important;
-  background: $background-colour-calendar !important;
+  background: $background-colour-alt !important;
 }
 
 </style>
