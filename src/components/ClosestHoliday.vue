@@ -28,7 +28,7 @@
           <p>
             Using national holidays, this calendar shoes how you can get the most consecutive days off in a row, while booking off the least amount of days.
           </p>
-          <div>
+          <div></div>
             <ul>
               <li id="weekend">
                 Weekend
